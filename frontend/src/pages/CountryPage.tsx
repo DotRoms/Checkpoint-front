@@ -27,14 +27,14 @@ export function CountryPage() {
 
   console.log("CountryPage data:", data);
   return (
-    <section className="country_card">
+    <section className="flex flex-col gap-4 p-4 items-center justify-center">
       <p>Information for code : {code}</p>
 
       <div>
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error.message}</p>}
         {data && (
-          <div>
+          <div className="flex flex-col gap-2 items-center justify-center text-xl">
             <p>Name : {data.country.name}</p>
             <p>Code : {data.country.code}</p>
             <p>Emoji : {data.country.emoji}</p>

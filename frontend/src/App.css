@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 * {
   box-sizing: border-box;
@@ -18,7 +16,7 @@ body {
   background-color: #f5f5f5;
 }
 
-.countries-container {
+/* .countries-container {
   display: flex;
   justify-content: center;
 }
@@ -60,4 +58,4 @@ form {
 
 form label {
   font-weight: bold;
-}
+} */

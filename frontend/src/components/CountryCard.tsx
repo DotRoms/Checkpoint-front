@@ -5,7 +5,7 @@ export function CountryCard({
   country: { name: string; emoji: string; code: string };
 }) {
   return (
-    <div className="country_card">
+    <div className="flex flex-col gap-2 items-center justify-center p-4 border rounded-lg shadow-md bg-white">
       <h2>{country.name}</h2>
       <p>{country.emoji}</p>
       <p>{country.code}</p>

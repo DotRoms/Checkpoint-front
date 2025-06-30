@@ -1,5 +1,7 @@
 import { useMutation, useQuery } from "@apollo/client";
+import { useState } from "react";
 import { CountryCard } from "../components/CountryCard";
+import { CountryFormLabel } from "../components/CountryFormLabel";
 import { ADD_COUNTRY } from "../requests/mutations/country.mutation";
 import { GET_CONTINENTS } from "../requests/queries/continent.query";
 import { GET_COUNTRIES } from "../requests/queries/countries.query";
@@ -32,6 +34,7 @@ type getContinentsData = {
 };
 
 export function HomePage() {
+  const [succesMessage, setSuccesMessage] = useState<string | null>(null);
   const { data, loading, error } = useQuery<GetCountriesData>(GET_COUNTRIES);
 
   const { data: continentData } = useQuery<getContinentsData>(GET_CONTINENTS);
@@ -48,7 +51,6 @@ export function HomePage() {
     const name = formData.get("name");
     const emoji = formData.get("emoji");
     const continent = formData.get("continent");
-    console.log("Form data:", { code, name, emoji, continent });
     try {
       await addCountry({
         variables: {
@@ -61,6 +63,10 @@ export function HomePage() {
             emoji,
           },
         },
+        onCompleted: () => {
+          setSuccesMessage("Country added successfully!");
+          setTimeout(() => setSuccesMessage(null), 3000);
+        },
       });
       console.log("Country added!");
       event.currentTarget.reset();
@@ -70,32 +76,43 @@ export function HomePage() {
   };
 
   return (
-    <section className="bg-blue-100">
-      <h1>Countries</h1>
+    <section className="flex flex-col gap-4 p-4 items-center justify-center">
+      <h1 className="text-xl">All countries</h1>
 
-      <div>
-        <p>Add country</p>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="code">code :</label>
-          <input type="text" name="code" id="code" required />
+      <div className="flex flex-col gap-4 p-8 items-center justify-center border rounded-md">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <CountryFormLabel text="Code :" id="code" />
+          <CountryFormLabel text="Name: " id="name" />
+          <CountryFormLabel text="Emoji :" id="emoji" />
 
-          <label htmlFor="name">Name :</label>
-          <input type="text" name="name" id="name" required />
+          <div className="flex flex-col gap-2 items-start justify-start">
+            <label htmlFor="continent">Continent :</label>
+            <select
+              name="continent"
+              id="continent"
+              required
+              className="border p-2 w-full rounded-md"
+            >
+              {continentData &&
+                continentData.continents.map((continent) => (
+                  <option key={continent.id} value={continent.id}>
+                    {continent.name}
+                  </option>
+                ))}
+            </select>
+          </div>
 
-          <label htmlFor="emoji">Emoji :</label>
-          <input type="text" name="emoji" id="emoji" required />
-
-          <label htmlFor="continent">Continent :</label>
-          <select name="continent" id="continent" required>
-            {continentData &&
-              continentData.continents.map((continent) => (
-                <option key={continent.id} value={continent.id}>
-                  {continent.name}
-                </option>
-              ))}
-          </select>
-
-          <button type="submit">Submit</button>
+          <button
+            type="submit"
+            className="p-2 bg-blue-300 hover:bg-blue-400 text-white transition-all duration-150 rounded-md"
+          >
+            Submit
+          </button>
+          {succesMessage && (
+            <p className="p-2 bg-green-500 text-center w-full text-white rounded-md">
+              {succesMessage}
+            </p>
+          )}
         </form>
       </div>
 
@@ -103,7 +120,7 @@ export function HomePage() {
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error.message}</p>}
         {data && (
-          <div className="countries-list">
+          <div className="flex flex-wrap gap-4 items-center justify-center">
             {data.countries.map((country: Country) => (
               <CountryCard key={country.code} country={country} />
             ))}
