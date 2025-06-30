@@ -25,6 +25,7 @@ body {
 
 .countries-list {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .country_card {
